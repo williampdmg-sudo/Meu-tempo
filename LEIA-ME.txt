@@ -1,0 +1,13 @@
+MEU TEMPO — pacote inicial para GitHub Pages
+
+1. Crie um repositório no GitHub.
+2. Envie TODOS os arquivos desta pasta para a raiz do repositório.
+3. Em Settings > Pages, escolha Deploy from a branch.
+4. Selecione a branch main e a pasta / (root), depois Save.
+5. Aguarde a publicação e abra o endereço informado pelo GitHub.
+
+Observações:
+- Esta versão mantém os dados localmente no navegador/dispositivo.
+- Não há sincronização em nuvem nem autenticação nesta etapa.
+- O repositório público deixa o código-fonte visível; não coloque dados pessoais ou senhas nos arquivos.
+- O service worker faz cache básico da interface; não garante notificações com o app fechado.
