@@ -23,8 +23,53 @@ header{height:68px;display:flex;align-items:center;justify-content:space-between
 .field{margin:11px 0}.field label{display:block;font-size:11px;font-weight:750;color:#656575;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;background:white;outline-color:var(--purple);font-size:13px}.field textarea{min-height:65px;resize:vertical}.two{display:grid;grid-template-columns:1fr 1fr;gap:9px}.formfoot{display:flex;gap:8px;margin-top:17px}.formfoot .primary{flex:1}.filepick{display:block;padding:12px;text-align:center;border:1px dashed #c9c4e5;border-radius:12px;color:var(--purple);font-size:12px;font-weight:750}.files{font-size:11px;color:var(--muted);margin-top:5px}.fileline{display:flex;justify-content:space-between;padding:5px 0;gap:6px}.fileline button{border:0;background:none;color:var(--purple)}
 .notice{padding:12px 13px;background:#f1efff;border-radius:13px;color:#5d548f;font-size:11px;line-height:1.5;margin-bottom:12px}.notice.warn{background:#fff5e9;color:#8a622b}.search{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:12px;margin-bottom:12px}
 @media(min-width:680px){.app{padding-left:24px;padding-right:24px}.modalback{align-items:center}.modal{border-radius:22px;padding:23px}.grid{grid-template-columns:repeat(3,1fr)}.yeargrid{grid-template-columns:repeat(3,1fr)}.date{min-height:65px}}
+
+/* Correção de campos e botões no iPhone */
+.field{min-width:0}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;min-width:0}
+.two>.field{min-width:0;width:100%}
+.two input,.two select,.two textarea{display:block;width:100%;max-width:100%;min-width:0}
+.field input,.field select,.field textarea{max-width:100%;min-width:0}
+.formfoot{display:flex;gap:9px;align-items:stretch}
+.formfoot button{min-width:0;min-height:48px}
+@media(max-width:430px){
+ .two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+ .two>.field{overflow:hidden}
+ .two input,.two select{font-size:16px!important;padding-left:9px;padding-right:9px}
+ .formfoot{padding-bottom:env(safe-area-inset-bottom)}
+}
+@media(max-width:350px){.two{grid-template-columns:minmax(0,1fr)}}
+
+
+/* V3 — autenticação e estado de acesso */
+body.locked .app, body.locked .fab {display:none}
+#authGate{display:none;min-height:100dvh;align-items:center;justify-content:center;padding:24px 16px;background:var(--bg)}
+body.locked #authGate{display:flex}
+.authbox{width:100%;max-width:420px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:var(--shadow)}
+.authbrand{font-size:25px;font-weight:900;letter-spacing:-1px;margin-bottom:8px}.authbrand span{color:var(--purple)}
+.authbox h1{font-size:22px;margin:14px 0 6px}.authbox p{font-size:13px;color:var(--muted);line-height:1.5}
+.authbox input{width:100%;padding:13px;border:1px solid var(--line);border-radius:11px;margin:6px 0 12px;font-size:16px;min-width:0}
+.authbox button{width:100%;margin-top:8px;min-height:46px}.authlink{border:0;background:none;color:var(--purple);font-weight:750;padding:10px}
+#authMessage{font-size:12px;min-height:18px;color:var(--muted);margin-top:10px}
+.syncbar{font-size:11px;color:var(--muted);padding:8px 10px;background:#f1efff;border-radius:10px;margin:0 0 12px}
+
 </style></head>
-<body><div class="app">
+<body class="locked">
+<div id="authGate"><section class="authbox">
+  <div class="authbrand">meu<span>tempo.</span></div>
+  <div class="eyebrow">Seu espaço, seu ritmo</div>
+  <h1 id="authTitle">Entre na sua conta</h1>
+  <p id="authIntro">Acesse sua agenda, tarefas, hábitos, metas e documentos com segurança.</p>
+  <form id="authForm">
+    <label class="tiny" for="authEmail">E-mail</label><input id="authEmail" type="email" autocomplete="username" required placeholder="seu@email.com">
+    <div id="passwordField"><label class="tiny" for="authPassword">Senha</label><input id="authPassword" type="password" autocomplete="current-password" required placeholder="Sua senha"></div>
+    <div id="newPasswordField" hidden><label class="tiny" for="newPassword">Nova senha</label><input id="newPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Mínimo de 8 caracteres"></div>
+    <button class="primary" id="authSubmit" type="submit">Entrar</button>
+  </form>
+  <button class="authlink" id="forgotBtn" type="button">Esqueci minha senha</button>
+  <div id="authMessage" role="status"></div>
+</section></div>
+<div class="app">
 <header><div><div class="logo">meu<span>tempo.</span></div><div class="subdate" id="todayline"></div></div><div class="headright"><button class="ib" id="notifyBtn" title="Ativar notificações">♧</button><button class="ib" id="backupBtn" title="Backup">↥</button></div></header>
 <section class="hero"><div class="eyebrow">Seu espaço, seu ritmo</div><h1 id="hello">Organize seu tempo.</h1><p>Compromissos, tarefas, hábitos e objetivos em um só lugar.</p><div class="stats"><div class="stat"><b id="sEvents">0</b><small>compromissos hoje</small></div><div class="stat"><b id="sTasks">0</b><small>tarefas pendentes</small></div><div class="stat"><b id="sHabits">0%</b><small>hábitos de hoje</small></div></div></section>
 <nav class="nav" id="nav"><button class="active" data-page="dashboard">Visão geral</button><button data-page="calendar">Agenda</button><button data-page="tasks">Tarefas</button><button data-page="habits">Hábitos</button><button data-page="goals">Metas</button><button data-page="docs">Documentos</button><button data-page="settings">Ajustes</button></nav>
@@ -32,15 +77,149 @@ header{height:68px;display:flex;align-items:center;justify-content:space-between
 </div><button class="fab" id="fab">＋ Adicionar</button>
 <div class="modalback" id="back"><section class="modal"><div class="modalhead"><h2 id="modalTitle">Adicionar</h2><button class="close" id="close">✕</button></div><form id="form"></form></section></div>
 <script>
+(async function bootMeuTempo(){
+  const SUPABASE_URL = 'https://yxcxikprszrguzyfbnui.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_1UD4P86g_-zH__Y_XdMdFQ_NWlP2n-2';
+  const SITE_URL = 'https://williampdmg-sudo.github.io/Meu-tempo/';
+  const authMessage = document.getElementById('authMessage');
+  const authForm = document.getElementById('authForm');
+  const authTitle = document.getElementById('authTitle');
+  const authIntro = document.getElementById('authIntro');
+  const authSubmit = document.getElementById('authSubmit');
+  const passwordField = document.getElementById('passwordField');
+  const newPasswordField = document.getElementById('newPasswordField');
+  const forgotBtn = document.getElementById('forgotBtn');
+  let authMode = 'login', appStarted = false, currentSession = null, isRecovery = new URLSearchParams(location.search).get('recovery') === '1', isInvite = new URLSearchParams(location.search).get('invite') === '1' || new URLSearchParams(location.hash.replace(/^#/, '')).get('type') === 'invite';
+  const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+  const sb = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+  });
+  function authScreen(mode, message='') {
+    authMode = mode; document.body.classList.add('locked'); document.getElementById('authGate').style.display='flex';
+    authMessage.textContent = message;
+    const isReset = mode === 'reset';
+    const isRecovery = mode === 'recovery';
+    authTitle.textContent = isReset ? 'Recuperar acesso' : isRecovery ? 'Criar nova senha' : 'Entre na sua conta';
+    authIntro.textContent = isReset ? 'Informe seu e-mail para receber um link de recuperação.' : isRecovery ? 'Escolha uma nova senha para sua conta.' : 'Acesse sua agenda, tarefas, hábitos, metas e documentos com segurança.';
+    passwordField.hidden = isReset || isRecovery;
+    newPasswordField.hidden = !isRecovery;
+    document.getElementById('authEmail').required = !isRecovery;
+    document.getElementById('authPassword').required = !isReset && !isRecovery;
+    document.getElementById('newPassword').required = isRecovery;
+    authSubmit.textContent = isReset ? 'Enviar link' : isRecovery ? 'Salvar nova senha' : 'Entrar';
+    forgotBtn.hidden = isReset || isRecovery;
+    document.getElementById('authEmail').hidden = isRecovery;
+    document.querySelector('label[for="authEmail"]').hidden = isRecovery;
+  }
+  function enterApp(session) {
+    currentSession = session; document.body.classList.remove('locked');
+    document.getElementById('authGate').style.display = 'none';
+    if (!appStarted) { appStarted = true; initApp(sb, session); }
+    else if (window.meuTempoReloadCloud) window.meuTempoReloadCloud();
+  }
+  authForm.addEventListener('submit', async e => {
+    e.preventDefault(); authSubmit.disabled = true; authMessage.textContent = 'Aguarde…';
+    const email = document.getElementById('authEmail').value.trim();
+    try {
+      if (authMode === 'login') {
+        const { error } = await sb.auth.signInWithPassword({ email, password: document.getElementById('authPassword').value });
+        if (error) throw error;
+      } else if (authMode === 'reset') {
+        const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: SITE_URL + '?recovery=1' });
+        if (error) throw error;
+        authMessage.textContent = 'Se o e-mail estiver cadastrado, enviaremos um link de recuperação.';
+      } else if (authMode === 'recovery') {
+        const password = document.getElementById('newPassword').value;
+        const { error } = await sb.auth.updateUser({ password });
+        if (error) throw error;
+        history.replaceState({}, '', SITE_URL); isInvite=false; isRecovery=false; authMessage.textContent = 'Senha atualizada. Entrando…';
+        if (currentSession) enterApp(currentSession); else { const {data:s}=await sb.auth.getSession(); if(s.session) enterApp(s.session); }
+      }
+    } catch (err) { authMessage.textContent = err.message || 'Não foi possível concluir. Confira os dados e tente novamente.'; }
+    finally { authSubmit.disabled = false; }
+  });
+  forgotBtn.addEventListener('click', () => authScreen('reset'));
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'PASSWORD_RECOVERY' || isRecovery) { authScreen('recovery'); if (session) currentSession=session; return; }
+    if (session) {
+      if (isInvite) { currentSession=session; authScreen('recovery', 'Convite validado. Defina sua senha para continuar.'); return; }
+      enterApp(session);
+    } else { appStarted=false; authScreen('login'); }
+  });
+  const { data: sessionData, error: sessionError } = await sb.auth.getSession();
+  if (sessionError) authScreen('login', 'Não foi possível validar sua sessão. Entre novamente.');
+  else if (isRecovery) authScreen('recovery');
+  else if (isInvite && sessionData.session) { currentSession=sessionData.session; authScreen('recovery', 'Convite validado. Defina sua senha para continuar.'); }
+  else if (sessionData.session) enterApp(sessionData.session);
+  else authScreen('login');
+
+  function initApp(sb, session) {
 const $=s=>document.querySelector(s), today=new Date(), dayKey=d=>{let x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`}, pad=n=>String(n).padStart(2,'0'), localVal=d=>`${dayKey(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}`, fmt=d=>new Date(d).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}), time=d=>new Date(d).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let db, data={events:[],tasks:[],habits:[],goals:[],docs:[]}, page='dashboard', calView='month', focus=new Date(today.getFullYear(),today.getMonth(),today.getDate()), search='';
 const openReq=indexedDB.open('meuTempoV2',1);
 openReq.onupgradeneeded=()=>{db=openReq.result;['events','tasks','habits','goals','docs'].forEach(n=>{if(!db.objectStoreNames.contains(n))db.createObjectStore(n,{keyPath:'id'})})};
 openReq.onsuccess=()=>{db=openReq.result;loadAll()};openReq.onerror=()=>{$('#main').innerHTML='<div class="notice warn">Não foi possível abrir o armazenamento do navegador.</div>';};
 function all(store){return new Promise(resolve=>{let r=db.transaction(store).objectStore(store).getAll();r.onsuccess=()=>resolve(r.result||[]);r.onerror=()=>resolve([])})}
-async function loadAll(){for(let k of Object.keys(data))data[k]=await all(k);render()}
-function save(k,obj){return new Promise(resolve=>{let tx=db.transaction(k,'readwrite');tx.objectStore(k).put(obj);tx.oncomplete=()=>{loadAll();resolve()};tx.onerror=()=>alert('Não foi possível salvar este item.')})}
-function del(k,id){let tx=db.transaction(k,'readwrite');tx.objectStore(k).delete(id);tx.oncomplete=loadAll}
+async function loadAll(){
+  if (!sb.auth.getSession) return;
+  const { data: sess } = await sb.auth.getSession();
+  if (!sess.session) return;
+  for (let k of Object.keys(data)) {
+    const { data: rows, error } = await sb.from('user_records').select('id,data').eq('collection', k);
+    if (error) { console.error(error); continue; }
+    data[k] = (rows || []).map(r => ({ ...(r.data || {}), id: r.id }));
+  }
+  render();
+}
+async function uploadRecord(k,obj){
+  const copy = JSON.parse(JSON.stringify(obj));
+  const user = (await sb.auth.getUser()).data.user;
+  if (!user) throw new Error('Sessão expirada. Entre novamente.');
+  async function putBlob(blob, filename){
+    const safeName = String(filename || 'arquivo').replace(/[^a-zA-Z0-9._-]/g,'_');
+    const path = `${user.id}/${k}/${obj.id}/${crypto.randomUUID()}-${safeName}`;
+    const { error } = await sb.storage.from('meu-tempo-files').upload(path, blob, { upsert: true, contentType: blob.type || 'application/octet-stream' });
+    if (error) throw error;
+    return { storagePath: path, size: blob.size, type: blob.type || '', name: filename || safeName };
+  }
+  if (k === 'docs' && obj.blob instanceof Blob) {
+    const f = await putBlob(obj.blob, obj.name);
+    copy.storagePath=f.storagePath; copy.size=f.size; copy.type=f.type; delete copy.blob;
+  }
+  if (k === 'events' && Array.isArray(obj.files)) {
+    copy.files=[];
+    for (const file of obj.files) {
+      if (file.blob instanceof Blob) copy.files.push({ ...file, ...(await putBlob(file.blob,file.name)), blob: undefined });
+      else copy.files.push(file);
+    }
+  }
+  return copy;
+}
+async function save(k,obj){
+  // Grava primeiro no dispositivo: uma falha de internet não deve apagar a edição.
+  await new Promise((resolve,reject)=>{
+    const tx=db.transaction(k,'readwrite');
+    tx.objectStore(k).put(obj);
+    tx.oncomplete=resolve;
+    tx.onerror=()=>reject(tx.error || new Error('Falha ao salvar neste dispositivo.'));
+  });
+  try {
+    const payload=await uploadRecord(k,obj);
+    const { error } = await sb.from('user_records').upsert({ id: obj.id, user_id: session.user.id, collection: k, data: payload, updated_at: new Date().toISOString() }, { onConflict: 'user_id,collection,id' });
+    if (error) throw error;
+    await loadAll();
+  } catch(err) {
+    alert('A alteração ficou salva neste dispositivo, mas não sincronizou com a nuvem. Verifique a conexão e tente novamente. '+(err.message||''));
+    render();
+  }
+}
+async function del(k,id){
+  try {
+    const { error } = await sb.from('user_records').delete().eq('collection',k).eq('id',id);
+    if (error) throw error;
+    const tx=db.transaction(k,'readwrite'); tx.objectStore(k).delete(id); tx.oncomplete=loadAll;
+  } catch(err) { alert('Não foi possível excluir na nuvem: '+(err.message||'')); }
+}
 const uid=()=>crypto.randomUUID();
 function setPage(p){page=p;document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));render();$('#fab').style.display=p==='settings'?'none':'block'}
 function render(){let dayEvents=data.events.filter(e=>dayKey(e.start)===dayKey(today));let pending=data.tasks.filter(t=>!t.done);let todaysHabits=data.habits;let doneHabits=todaysHabits.filter(h=>(h.logs||[]).includes(dayKey(today))).length;$('#todayline').textContent=today.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});$('#hello').textContent=(today.getHours()<12?'Bom dia!':today.getHours()<18?'Boa tarde!':'Boa noite!')+' Vamos organizar seu tempo.';$('#sEvents').textContent=dayEvents.length;$('#sTasks').textContent=pending.length;$('#sHabits').textContent=todaysHabits.length?Math.round(doneHabits/todaysHabits.length*100)+'%':'—';let html='';if(page==='dashboard')html=dashboard();if(page==='calendar')html=calendar();if(page==='tasks')html=tasksPage();if(page==='habits')html=habitsPage();if(page==='goals')html=goalsPage();if(page==='docs')html=docsPage();if(page==='settings')html=settingsPage();$('#main').innerHTML=html}
@@ -52,9 +231,9 @@ function habitItem(h){let done=(h.logs||[]).includes(dayKey(today));return `<div
 function habitsPage(){return `<div class="pagehead"><h2>Hábitos e rotina</h2><span class="muted">${data.habits.length} hábito(s)</span></div><div class="notice">Marque cada hábito quando concluir. O histórico fica registrado por dia neste dispositivo.</div><div class="list">${data.habits.length?data.habits.map(habitItem).join(''):'<div class="empty"><b>Comece com um hábito pequeno</b>Ex.: beber água, ler 10 páginas ou caminhar.</div>'}</div>`}
 function goalItem(g){let p=Math.min(100,Math.round((Number(g.current)||0)/(Number(g.target)||1)*100));return `<div class="item"><div class="itembody"><div class="itemtitle">${esc(g.title)}</div><div class="meta"><span>${g.current||0} / ${g.target||1} ${esc(g.unit||'etapas')}</span><span>${g.due?'Até '+fmt(g.due):''}</span></div><div class="progress"><i style="width:${p}%"></i></div></div><button class="mini" data-edit="goals" data-id="${g.id}">Editar</button></div>`}
 function goalsPage(){return `<div class="pagehead"><h2>Metas e objetivos</h2><span class="muted">${data.goals.length} meta(s)</span></div><div class="list">${data.goals.length?data.goals.map(goalItem).join(''):'<div class="empty"><b>O que você quer conquistar?</b>Crie metas com prazo e acompanhe seu progresso.</div>'}</div>`}
-function docsPage(){return `<div class="pagehead"><h2>Central de documentos</h2><span class="muted">${data.docs.length} arquivo(s)</span></div><div class="notice">Arquivos anexados ficam armazenados no navegador deste dispositivo. Faça backups frequentes para não perder documentos.</div><div class="list">${data.docs.length?data.docs.map(d=>`<div class="item"><div class="itembody"><div class="itemtitle">▤ ${esc(d.name)}</div><div class="meta"><span>${esc(d.category||'Geral')}</span><span>${d.blob?.size?Math.round(d.blob.size/1024)+' KB':''}</span></div></div><button class="mini" data-download="${d.id}">Baixar</button><button class="mini" data-edit="docs" data-id="${d.id}">•••</button></div>`).join(''):'<div class="empty"><b>Sua biblioteca pessoal</b>Guarde documentos importantes, comprovantes e referências.</div>'}</div>`}
+function docsPage(){return `<div class="pagehead"><h2>Central de documentos</h2><span class="muted">${data.docs.length} arquivo(s)</span></div><div class="notice">Arquivos enviados ficam em armazenamento privado na nuvem, vinculados à sua conta.</div><div class="list">${data.docs.length?data.docs.map(d=>`<div class="item"><div class="itembody"><div class="itemtitle">▤ ${esc(d.name)}</div><div class="meta"><span>${esc(d.category||'Geral')}</span><span>${(d.size||d.blob?.size)?Math.round((d.size||d.blob.size)/1024)+' KB':''}</span></div></div><button class="mini" data-download="${d.id}">Baixar</button><button class="mini" data-edit="docs" data-id="${d.id}">•••</button></div>`).join(''):'<div class="empty"><b>Sua biblioteca pessoal</b>Guarde documentos importantes, comprovantes e referências.</div>'}</div>`}
 function calendar(){let y=focus.getFullYear(),m=focus.getMonth(),label=calView==='year'?y:calView==='week'?'Semana de '+fmt(focus):calView==='day'?focus.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}):focus.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});let top=`<div class="pagehead"><h2>Agenda</h2><button class="secondary" data-caladd>＋ Compromisso</button></div><div class="toolbar"><strong>${label}</strong><div><button class="mini" data-calnav="-1">‹</button> <button class="mini" data-calnow>Hoje</button> <button class="mini" data-calnav="1">›</button></div></div><div class="nav" style="margin:0 0 14px"><button data-calview="day" class="${calView==='day'?'active':''}">Dia</button><button data-calview="week" class="${calView==='week'?'active':''}">Semana</button><button data-calview="month" class="${calView==='month'?'active':''}">Mês</button><button data-calview="year" class="${calView==='year'?'active':''}">Ano</button></div>`;if(calView==='day')return top+eventsList(data.events.filter(e=>dayKey(e.start)===dayKey(focus)));if(calView==='week'){let monday=new Date(focus);monday.setDate(monday.getDate()-(monday.getDay()+6)%7);return top+Array.from({length:7},(_,i)=>{let d=new Date(monday);d.setDate(monday.getDate()+i);return `<div class="weekrow"><div class="weekdaybox">${d.toLocaleDateString('pt-BR',{weekday:'short'})}<br>${d.getDate()}</div><div class="weekevents">${eventsList(data.events.filter(e=>dayKey(e.start)===dayKey(d)))}</div></div>`}).join('')}if(calView==='year')return top+'<div class="yeargrid">'+Array.from({length:12},(_,i)=>`<div class="yearmonth"><b>${new Date(y,i,1).toLocaleDateString('pt-BR',{month:'long'})}</b><div>${data.events.filter(e=>new Date(e.start).getMonth()===i&&new Date(e.start).getFullYear()===y).length} compromisso(s)</div><button data-month="${i}">Abrir mês →</button></div>`).join('')+'</div>';let first=new Date(y,m,1),offset=(first.getDay()+6)%7,days=new Date(y,m+1,0).getDate(),cells='';for(let i=0;i<42;i++){let n=i-offset+1,d=n<1?new Date(y,m-1,new Date(y,m,0).getDate()+n):n>days?new Date(y,m+1,n-days):new Date(y,m,n),list=data.events.filter(e=>dayKey(e.start)===dayKey(d));cells+=`<button class="date ${d.getMonth()!==m?'dim':''} ${dayKey(d)===dayKey(focus)?'sel':''} ${dayKey(d)===dayKey(today)?'today':''}" data-date="${dayKey(d)}">${d.getDate()}${list.length?'<div class="dots"><i></i></div>':''}</button>`}return top+'<div class="monthgrid">'+['seg','ter','qua','qui','sex','sáb','dom'].map(x=>`<div class="weekday">${x}</div>`).join('')+cells+'</div><div class="pagehead" style="margin-top:18px"><h2>'+focus.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})+'</h2></div>'+eventsList(data.events.filter(e=>dayKey(e.start)===dayKey(focus)))}
-function settingsPage(){return `<div class="pagehead"><h2>Ajustes e sincronização</h2></div><div class="notice warn"><b>Sobre o uso em vários dispositivos</b><br>Esta versão salva os dados localmente no navegador. Para sincronização automática real entre celular e computador, será necessário conectar um serviço de nuvem e configurar uma conta. Até lá, use o backup para transferir seus dados manualmente.</div><div class="card"><h3>Notificações</h3><p class="muted">Permita notificações do navegador para receber lembretes. O navegador precisa continuar aberto para verificar os horários programados nesta versão.</p><button class="secondary" id="askNotify">Ativar notificações</button><p class="tiny" id="notifyStatus">${'Permissão: '+(Notification?.permission||'indisponível')}</p></div><div class="card" style="margin-top:10px"><h3>Backup e restauração</h3><p class="muted">Exporte seus dados para um arquivo JSON. Guarde esse arquivo em local seguro e importe-o em outro dispositivo.</p><button class="primary" id="exportData">Exportar backup</button> <label class="secondary" style="display:inline-block;cursor:pointer">Importar backup <input type="file" id="importData" accept=".json,application/json" hidden></label></div><div class="card" style="margin-top:10px"><h3>Privacidade</h3><p class="muted">Os dados permanecem neste navegador, salvo quando você exporta um backup. Limpar os dados do navegador pode apagar sua agenda e os anexos.</p></div>`}
+function settingsPage(){const isAdmin=session.user.app_metadata?.role==='admin';return `<div class="pagehead"><h2>Ajustes e sincronização</h2></div><div class="syncbar">☁ Conta conectada: ${esc(session.user.email||'')} · sincronização na nuvem ativa</div>${isAdmin?`<div class="card"><h3>Administração de acessos</h3><p class="muted">Somente sua conta administradora pode convidar novos usuários. Cada convite cria uma conta independente.</p><div class="field"><label>E-mail para convite</label><input id="inviteEmail" type="email" placeholder="pessoa@email.com"></div><button class="primary" id="sendInvite">Enviar convite</button><p class="tiny" id="inviteStatus"></p><hr style="border:0;border-top:1px solid var(--line);margin:16px 0"><h3>Migração deste dispositivo</h3><p class="muted">Seus dados antigos continuam no navegador. Importe-os para sua conta administradora somente depois de conferir o backup.</p><button class="secondary" id="migrateLocal">Importar dados locais para esta conta</button><p class="tiny" id="migrationStatus"></p></div>`:''}<div class="card" style="margin-top:10px"><h3>Notificações</h3><p class="muted">Permita notificações do navegador para receber lembretes. O navegador precisa continuar aberto para verificar os horários programados nesta versão.</p><button class="secondary" id="askNotify">Ativar notificações</button><p class="tiny" id="notifyStatus">${'Permissão: '+(('Notification' in window) ? Notification.permission : 'indisponível')}</p></div><div class="card" style="margin-top:10px"><h3>Backup e restauração</h3><p class="muted">Exporte uma cópia de segurança dos seus dados locais. A sincronização principal é feita pela nuvem.</p><button class="primary" id="exportData">Exportar backup</button> <label class="secondary" style="display:inline-block;cursor:pointer">Importar backup <input type="file" id="importData" accept=".json,application/json" hidden></label></div><div class="card" style="margin-top:10px"><h3>Conta e privacidade</h3><p class="muted">Sua conta possui dados isolados. Outras contas não podem consultar sua agenda, tarefas, hábitos, metas ou documentos.</p><button class="secondary" id="signOutBtn">Sair da conta</button></div>`}
 function openForm(kind,obj=null){let title={events:'Compromisso',tasks:'Tarefa',habits:'Hábito',goals:'Meta',docs:'Documento'}[kind];$('#modalTitle').textContent=(obj?'Editar ':'Novo ')+title.toLowerCase();let f='';if(kind==='events')f=`<div class="field"><label>Título</label><input name="title" required value="${esc(obj?.title)}" placeholder="Ex.: Reunião com cliente"></div><div class="two"><div class="field"><label>Início</label><input name="start" type="datetime-local" required value="${obj?.start?localVal(new Date(obj.start)):localVal(new Date(focus.getFullYear(),focus.getMonth(),focus.getDate(),9))}"></div><div class="field"><label>Término</label><input name="end" type="datetime-local" value="${obj?.end?localVal(new Date(obj.end)):''}"></div></div><div class="two"><div class="field"><label>Categoria</label><select name="category">${['Trabalho','Pessoal','Saúde','Estudos','Família','Lazer','Outro'].map(x=>`<option ${obj?.category===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="field"><label>Repetição</label><select name="repeat"><option value="none">Não repetir</option><option value="daily" ${obj?.repeat==='daily'?'selected':''}>Diariamente</option><option value="weekly" ${obj?.repeat==='weekly'?'selected':''}>Semanalmente</option><option value="monthly" ${obj?.repeat==='monthly'?'selected':''}>Mensalmente</option><option value="yearly" ${obj?.repeat==='yearly'?'selected':''}>Anualmente</option></select></div></div><div class="field"><label>Local ou link</label><input name="location" value="${esc(obj?.location)}" placeholder="Endereço ou link da reunião"></div><div class="field"><label>Notas</label><textarea name="notes">${esc(obj?.notes)}</textarea></div><div class="field"><label>Lembrete</label><select name="remind"><option value="0">Sem lembrete</option><option value="5">5 minutos antes</option><option value="15">15 minutos antes</option><option value="30">30 minutos antes</option><option value="60">1 hora antes</option><option value="1440">1 dia antes</option></select></div><div class="field"><label>Anexar arquivos</label><label class="filepick">＋ Selecionar arquivos<input name="files" type="file" multiple hidden></label><div class="files">${(obj?.files||[]).map(x=>esc(x.name)).join(' · ')}</div></div>`;
 if(kind==='tasks')f=`<div class="field"><label>Tarefa</label><input name="title" required value="${esc(obj?.title)}" placeholder="O que precisa ser feito?"></div><div class="two"><div class="field"><label>Prazo</label><input name="due" type="date" value="${obj?.due||''}"></div><div class="field"><label>Prioridade</label><select name="priority">${['Baixa','Normal','Alta','Urgente'].map(x=>`<option ${obj?.priority===x?'selected':''}>${x}</option>`).join('')}</select></div></div><div class="field"><label>Checklist (um item por linha)</label><textarea name="checklist" placeholder="Separar materiais&#10;Enviar documento">${(obj?.checklist||[]).map(x=>x.text).join('\n')}</textarea></div>`;
 if(kind==='habits')f=`<div class="field"><label>Nome do hábito</label><input name="title" required value="${esc(obj?.title)}" placeholder="Ex.: Ler 15 minutos"></div><div class="field"><label>Frequência</label><select name="frequency"><option>Diário</option><option>Segunda a sexta</option><option>Semanal</option></select></div>`;
@@ -70,10 +249,11 @@ if(obj)$('#deleteItem').onclick=()=>{if(confirm('Excluir este item?')){del(kind,
 }
 $('#nav').onclick=e=>{let b=e.target.closest('[data-page]');if(b)setPage(b.dataset.page)};
 $('#fab').onclick=()=>openForm(({dashboard:'events',calendar:'events',tasks:'tasks',habits:'habits',goals:'goals',docs:'docs'})[page]||'events');
-$('#main').onclick=e=>{let g=e.target.closest('[data-goto]');if(g){setPage(g.dataset.goto);return}let edit=e.target.closest('[data-edit]');if(edit){let k=edit.dataset.edit;openForm(k,data[k].find(x=>x.id===edit.dataset.id));return}let tc=e.target.closest('[data-taskcheck]');if(tc){let t=data.tasks.find(x=>x.id===tc.dataset.taskcheck);t.done=tc.checked;save('tasks',t);return}let hc=e.target.closest('[data-habitcheck]');if(hc){let h=data.habits.find(x=>x.id===hc.dataset.habitcheck);h.logs=h.logs||[];h.logs=hc.checked?[...new Set([...h.logs,dayKey(today)])]:h.logs.filter(x=>x!==dayKey(today));save('habits',h);return}let date=e.target.closest('[data-date]');if(date){focus=new Date(date.dataset.date+'T12:00:00');render();return}let mv=e.target.closest('[data-month]');if(mv){focus=new Date(focus.getFullYear(),Number(mv.dataset.month),1);calView='month';render();return}let cv=e.target.closest('[data-calview]');if(cv){calView=cv.dataset.calview;render();return}let cn=e.target.closest('[data-calnav]');if(cn){let n=Number(cn.dataset.calnav);if(calView==='day')focus.setDate(focus.getDate()+n);if(calView==='week')focus.setDate(focus.getDate()+7*n);if(calView==='month')focus.setMonth(focus.getMonth()+n);if(calView==='year')focus.setFullYear(focus.getFullYear()+n);render();return}if(e.target.closest('[data-calnow]')){focus=new Date(today.getFullYear(),today.getMonth(),today.getDate());render();return}if(e.target.closest('[data-caladd]'))openForm('events');let dl=e.target.closest('[data-download]');if(dl){let d=data.docs.find(x=>x.id===dl.dataset.download);downloadBlob(d.blob,d.name)}};
+$('#main').onclick=e=>{let g=e.target.closest('[data-goto]');if(g){setPage(g.dataset.goto);return}let edit=e.target.closest('[data-edit]');if(edit){let k=edit.dataset.edit;openForm(k,data[k].find(x=>x.id===edit.dataset.id));return}let tc=e.target.closest('[data-taskcheck]');if(tc){let t=data.tasks.find(x=>x.id===tc.dataset.taskcheck);t.done=tc.checked;save('tasks',t);return}let hc=e.target.closest('[data-habitcheck]');if(hc){let h=data.habits.find(x=>x.id===hc.dataset.habitcheck);h.logs=h.logs||[];h.logs=hc.checked?[...new Set([...h.logs,dayKey(today)])]:h.logs.filter(x=>x!==dayKey(today));save('habits',h);return}let date=e.target.closest('[data-date]');if(date){focus=new Date(date.dataset.date+'T12:00:00');render();return}let mv=e.target.closest('[data-month]');if(mv){focus=new Date(focus.getFullYear(),Number(mv.dataset.month),1);calView='month';render();return}let cv=e.target.closest('[data-calview]');if(cv){calView=cv.dataset.calview;render();return}let cn=e.target.closest('[data-calnav]');if(cn){let n=Number(cn.dataset.calnav);if(calView==='day')focus.setDate(focus.getDate()+n);if(calView==='week')focus.setDate(focus.getDate()+7*n);if(calView==='month')focus.setMonth(focus.getMonth()+n);if(calView==='year')focus.setFullYear(focus.getFullYear()+n);render();return}if(e.target.closest('[data-calnow]')){focus=new Date(today.getFullYear(),today.getMonth(),today.getDate());render();return}if(e.target.closest('[data-caladd]'))openForm('events');let dl=e.target.closest('[data-download]');if(dl){let d=data.docs.find(x=>x.id===dl.dataset.download);downloadRecordFile(d)}};
 $('#main').addEventListener('input',e=>{if(e.target.id==='filterSearch'){search=e.target.value;let pos=e.target.selectionStart;render();let x=$('#filterSearch');x.focus();x.setSelectionRange(pos,pos)}});
 $('#close').onclick=()=>$('#back').classList.remove('show');$('#back').onclick=e=>{if(e.target.id==='back')$('#back').classList.remove('show')};
 function downloadBlob(blob,name){if(!blob){alert('Arquivo não encontrado no armazenamento.');return}let u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+async function downloadRecordFile(d){if(d?.blob){downloadBlob(d.blob,d.name);return}if(!d?.storagePath){alert('Arquivo não encontrado.');return}const {data:link,error}=await sb.storage.from('meu-tempo-files').createSignedUrl(d.storagePath,60);if(error){alert('Não foi possível acessar o documento. '+error.message);return}const a=document.createElement('a');a.href=link.signedUrl;a.download=d.name||'documento';a.target='_blank';a.click()}
 function exportBackup(){let req=indexedDB.open('meuTempoV2');req.onsuccess=async()=>{let allData={version:2,exportedAt:new Date().toISOString(),data:{}};for(let k of Object.keys(data)){allData.data[k]=await all(k);allData.data[k]=await Promise.all(allData.data[k].map(async o=>{let x={...o};for(let field of ['blob'])if(x[field])x[field]=await blobToData(x[field]);if(x.files)x.files=await Promise.all(x.files.map(async f=>({...f,blob:f.blob?await blobToData(f.blob):null})));return x}))}let b=new Blob([JSON.stringify(allData)],{type:'application/json'});downloadBlob(b,'meu-tempo-backup.json')}}
 function blobToData(blob){return new Promise(res=>{let r=new FileReader();r.onload=()=>res({data:r.result,type:blob.type});r.readAsDataURL(blob)})}
 async function dataToBlob(x){if(x&&x.data){let r=await fetch(x.data);return await r.blob()}return x}
@@ -84,5 +264,45 @@ document.addEventListener('change',async e=>{if(e.target.id==='importData'){let 
 function checkReminders(){if(!('Notification'in window)||Notification.permission!=='granted')return;let now=Date.now();for(let e of data.events){if(!e.remind||e.notified)continue;let target=new Date(e.start).getTime()-e.remind*60000;if(target<=now&&target>now-60000){new Notification('Lembrete: '+e.title,{body:'Começa às '+time(e.start)});e.notified=true;save('events',e)}}}
 setInterval(checkReminders,30000);
 render();
+// Atualizações remotas da própria conta
+const realtime = sb.channel('meu-tempo-user-records').on('postgres_changes',{event:'*',schema:'public',table:'user_records',filter:`user_id=eq.${session.user.id}`},()=>loadAll()).subscribe();
+window.meuTempoReloadCloud=loadAll;
+document.addEventListener('click',async e=>{
+  if(e.target.id==='signOutBtn'){await sb.auth.signOut();location.reload();}
+  if(e.target.id==='sendInvite'){
+    const email=document.getElementById('inviteEmail').value.trim(); const status=document.getElementById('inviteStatus');
+    if(!email){status.textContent='Informe um e-mail.';return;}
+    status.textContent='Enviando convite…'; e.target.disabled=true;
+    const {error}=await sb.functions.invoke('invite-user',{body:{email}});
+    status.textContent=error?('Não foi possível enviar: '+error.message):'Convite enviado. Oriente a pessoa a conferir a caixa de entrada e o spam.';
+    e.target.disabled=false;
+  }
+  if(e.target.id==='migrateLocal'){
+    const status=document.getElementById('migrationStatus');
+    if(!confirm('Importar os dados locais deste navegador para a conta atualmente conectada? Faça um backup antes.')) return;
+    e.target.disabled=true; status.textContent='Verificando registros…';
+    try {
+      const {data:existing,error:readErr}=await sb.from('user_records').select('id,collection');
+      if(readErr) throw readErr;
+      const known=new Set((existing||[]).map(r=>r.collection+'|'+r.id));
+      let imported=0, skipped=0;
+      for(const k of Object.keys(data)){
+        const localRows=await all(k);
+        for(const row of localRows){
+          if(known.has(k+'|'+row.id)){skipped++;continue;}
+          const payload=await uploadRecord(k,row);
+          const {error}=await sb.from('user_records').insert({id:row.id,user_id:session.user.id,collection:k,data:payload});
+          if(error) throw error;
+          imported++;
+          status.textContent=`Importando… ${imported} registro(s)`;
+        }
+      }
+      await loadAll(); status.textContent=`Concluído: ${imported} importado(s), ${skipped} já existente(s) ignorado(s).`;
+    } catch(err) { status.textContent='A migração foi interrompida: '+(err.message||'erro desconhecido'); }
+    finally { e.target.disabled=false; }
+  }
+});
+  }
+})();
 </script><script>if ("serviceWorker" in navigator && location.protocol.startsWith("http")) { window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {})); }</script>
 </body></html>
